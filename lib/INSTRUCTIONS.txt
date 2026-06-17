@@ -1,0 +1,21 @@
+========================================================================
+INSTRUCTIONS POUR LIER LA BASE DE DONNÉES ORACLE A ECLIPSE (LOT 1)
+========================================================================
+
+Pour que le projet se connecte correctement à la base de données Oracle Express :
+
+1. Récupérez le fichier du pilote JDBC Oracle "ojdbc8.jar" (ou ojdbc6.jar/ojdbc7.jar selon votre version d'Oracle).
+   - Généralement, vous pouvez le trouver dans votre dossier d'installation Oracle, par exemple :
+     C:\oraclexe\app\oracle\product\11.2.0\server\jdbc\lib\
+     ou dans vos répertoires SQL Developer.
+   - Vous pouvez également le télécharger gratuitement sur le site d'Oracle (Oracle JDBC Driver Downloads).
+
+2. Copiez le fichier "ojdbc8.jar" dans ce dossier "lib" sous le nom exact :
+   ojdbc8.jar
+
+3. Dans Eclipse, faites un clic droit sur le projet puis sélectionnez "Refresh" (ou touche F5) pour qu'Eclipse détecte le fichier JAR et l'intègre au Build Path.
+
+4. Pour modifier les paramètres de connexion (URL, utilisateur, mot de passe), ouvrez le fichier :
+   /src/sga/util/Constantes.java
+
+5. Au lancement de l'application (Main.java) ou dans l'écran de connexion (FrmConnexion.java), décochez "Mode Simulation" pour tester la connexion directe JDBC.
