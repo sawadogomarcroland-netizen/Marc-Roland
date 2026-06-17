@@ -15,6 +15,7 @@ import sga.util.ConnexionBD;
 public class AccesDAOImpl implements IAccesDAO {
 
     @Override
+  
     public List<Acces> listerActifs() {
         if (ConnexionBD.isSimulationMode()) {
             List<Acces> result = new ArrayList<>();
