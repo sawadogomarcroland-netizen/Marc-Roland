@@ -5,17 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 import sga.metier.Personne;
 
 public class FrmMenuPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
-
     private JPanel contentPane;
     private Personne utilisateurConnecte;
 
     public FrmMenuPrincipal(Personne utilisateur) {
         this.utilisateurConnecte = utilisateur;
-        
+
         setTitle("SGA - Menu Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 500);
@@ -23,8 +23,8 @@ public class FrmMenuPrincipal extends JFrame {
         setResizable(false);
 
         Color primaryColor = new Color(44, 62, 80); // Dark Blue
-        Color accentColor = new Color(24, 188, 156); // Teal
-        Color accentOrange = new Color(230, 126, 34); // Orange
+        Color accentColor = new Color(22, 199, 154); // Teal (vif)
+        Color accentOrange = new Color(243, 132, 27); // Orange (vif)
         Color bgColor = new Color(240, 244, 248); // Slate Light Gray
 
         contentPane = new JPanel();
@@ -74,9 +74,11 @@ public class FrmMenuPrincipal extends JFrame {
         JButton btnDeconnexion = new JButton("Se déconnecter");
         btnDeconnexion.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnDeconnexion.setForeground(Color.WHITE);
-        btnDeconnexion.setBackground(new Color(192, 57, 43)); // Dark Red
+        btnDeconnexion.setBackground(new Color(217, 30, 24)); // Rouge vif
         btnDeconnexion.setBorderPainted(false);
         btnDeconnexion.setFocusPainted(false);
+        btnDeconnexion.setOpaque(true);
+        btnDeconnexion.setUI(new MetalButtonUI()); // CORRIGE : force le rendu Metal pour respecter les couleurs
         btnDeconnexion.setBounds(20, 400, 210, 40);
         btnDeconnexion.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panelSidebar.add(btnDeconnexion);
@@ -101,6 +103,8 @@ public class FrmMenuPrincipal extends JFrame {
         btnModuleTypes.setBackground(accentColor);
         btnModuleTypes.setBorderPainted(false);
         btnModuleTypes.setFocusPainted(false);
+        btnModuleTypes.setOpaque(true);
+        btnModuleTypes.setUI(new MetalButtonUI()); // CORRIGE : force le rendu Metal pour respecter les couleurs
         btnModuleTypes.setBounds(290, 150, 220, 180);
         btnModuleTypes.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnModuleTypes);
@@ -112,6 +116,8 @@ public class FrmMenuPrincipal extends JFrame {
         btnModulePoints.setBackground(accentOrange);
         btnModulePoints.setBorderPainted(false);
         btnModulePoints.setFocusPainted(false);
+        btnModulePoints.setOpaque(true);
+        btnModulePoints.setUI(new MetalButtonUI()); // CORRIGE : force le rendu Metal pour respecter les couleurs
         btnModulePoints.setBounds(540, 150, 220, 180);
         btnModulePoints.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnModulePoints);
