@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicToggleButtonUI;
+import javax.swing.plaf.metal.MetalButtonUI;
 import sga.dao.IPersonneDAO;
 import sga.dao.PersonneDAOImpl;
 import sga.metier.Personne;
@@ -13,13 +15,20 @@ import sga.util.HashUtil;
 
 public class FrmConnexion extends JFrame {
     private static final long serialVersionUID = 1L;
-    
+
     private JPanel contentPane;
     private JTextField txtLogin;
     private JPasswordField txtPassword;
     private JLabel lblMessageErreur;
     private JToggleButton btnModeSimu;
     private IPersonneDAO personneDAO = new PersonneDAOImpl();
+
+    // Couleurs du bouton bascule mode Simulation/Oracle (vives, pour rester lisibles
+    // sous le rendu Windows par défaut une fois combinées a setUI(BasicToggleButtonUI))
+    private final Color bgModeSimulation = new Color(253, 230, 200); // orange clair
+    private final Color bgModeOracle     = new Color(214, 234, 248); // bleu clair
+    private final Color fgModeSimulation = new Color(196, 89, 17);   // orange fonce
+    private final Color fgModeOracle     = new Color(31, 56, 80);    // bleu fonce
 
     public FrmConnexion() {
         setTitle("SGA - Authentification");
@@ -30,7 +39,7 @@ public class FrmConnexion extends JFrame {
 
         // Palette de couleurs premium
         Color primaryColor = new Color(44, 62, 80); // Slate Blue
-        Color accentColor = new Color(24, 188, 156); // Teal
+        Color accentColor = new Color(22, 199, 154); // Teal (vif)
         Color bgColor = new Color(245, 247, 250); // Light Gray
         Color textColor = new Color(51, 51, 51);
 
@@ -100,6 +109,8 @@ public class FrmConnexion extends JFrame {
         btnLogin.setBackground(accentColor);
         btnLogin.setBorderPainted(false);
         btnLogin.setFocusPainted(false);
+        btnLogin.setOpaque(true);
+        btnLogin.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs (Windows L&F les ignore sinon)
         btnLogin.setBounds(50, 310, 350, 40);
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnLogin);
@@ -117,10 +128,13 @@ public class FrmConnexion extends JFrame {
         btnModeSimu = new JToggleButton(isSimu ? "Mode : Simulation (Mémoire)" : "Mode : Base Oracle (JDBC)");
         btnModeSimu.setSelected(isSimu);
         btnModeSimu.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        btnModeSimu.setForeground(isSimu ? new Color(230, 126, 34) : primaryColor);
+        btnModeSimu.setOpaque(true);
+        btnModeSimu.setBorderPainted(false);
+        btnModeSimu.setFocusPainted(false);
+        btnModeSimu.setUI(new BasicToggleButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
+        appliquerStyleModeSimu(isSimu);
         btnModeSimu.setBounds(50, 380, 350, 30);
         btnModeSimu.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnModeSimu.setFocusPainted(false);
         contentPane.add(btnModeSimu);
 
         // Listeners
@@ -131,20 +145,20 @@ public class FrmConnexion extends JFrame {
                 ConnexionBD.setSimulationMode(simSelected);
                 if (simSelected) {
                     btnModeSimu.setText("Mode : Simulation (Mémoire)");
-                    btnModeSimu.setForeground(new Color(230, 126, 34));
+                    appliquerStyleModeSimu(true);
                 } else {
                     // Tente de se connecter
                     java.sql.Connection c = ConnexionBD.getConnexion();
                     if (ConnexionBD.isSimulationMode()) {
                         btnModeSimu.setSelected(true);
                         btnModeSimu.setText("Mode : Simulation (Échec Connexion BDD)");
-                        btnModeSimu.setForeground(new Color(231, 76, 60));
-                        JOptionPane.showMessageDialog(FrmConnexion.this, 
-                            "Impossible de se connecter à la base de données Oracle.\nLe mode simulation reste actif.", 
+                        appliquerStyleModeSimu(true);
+                        JOptionPane.showMessageDialog(FrmConnexion.this,
+                            "Impossible de se connecter à la base de données Oracle.\nLe mode simulation reste actif.",
                             "Erreur de connexion", JOptionPane.WARNING_MESSAGE);
                     } else {
                         btnModeSimu.setText("Mode : Base Oracle (JDBC)");
-                        btnModeSimu.setForeground(primaryColor);
+                        appliquerStyleModeSimu(false);
                     }
                 }
             }
@@ -164,6 +178,21 @@ public class FrmConnexion extends JFrame {
                 actionConnexion();
             }
         });
+    }
+
+    /**
+     * Applique le fond et la couleur de texte du bouton bascule selon le mode actif.
+     * Centralise la logique pour rester cohérent entre l'état initial et les mises a jour
+     * dans le listener.
+     */
+    private void appliquerStyleModeSimu(boolean simulationActive) {
+        if (simulationActive) {
+            btnModeSimu.setBackground(bgModeSimulation);
+            btnModeSimu.setForeground(fgModeSimulation);
+        } else {
+            btnModeSimu.setBackground(bgModeOracle);
+            btnModeSimu.setForeground(fgModeOracle);
+        }
     }
 
     private void actionConnexion() {
