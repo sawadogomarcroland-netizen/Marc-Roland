@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 import javax.swing.table.DefaultTableModel;
 import sga.metier.Personne;
 import sga.metier.TypeAcces;
@@ -28,7 +29,7 @@ public class FrmListeTypeAcces extends JFrame {
 
     public FrmListeTypeAcces(Personne utilisateur) {
         this.utilisateurConnecte = utilisateur;
-        
+
         setTitle("SGA - Liste des Types d'Accès");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 550);
@@ -83,6 +84,8 @@ public class FrmListeTypeAcces extends JFrame {
         btnRechercher.setBackground(primaryColor);
         btnRechercher.setBorderPainted(false);
         btnRechercher.setFocusPainted(false);
+        btnRechercher.setOpaque(true);
+        btnRechercher.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnRechercher.setBounds(430, 65, 90, 30);
         btnRechercher.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnRechercher);
@@ -96,7 +99,7 @@ public class FrmListeTypeAcces extends JFrame {
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         table.setRowHeight(25);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         tableModel = new DefaultTableModel(
             new Object[][] {},
             new String[] { "N° (ID)", "Libellé", "Description", "Date de création" }
@@ -108,13 +111,13 @@ public class FrmListeTypeAcces extends JFrame {
             }
         };
         table.setModel(tableModel);
-        
+
         // Ajustement des largeurs de colonnes
         table.getColumnModel().getColumn(0).setPreferredWidth(80);
         table.getColumnModel().getColumn(1).setPreferredWidth(200);
         table.getColumnModel().getColumn(2).setPreferredWidth(360);
         table.getColumnModel().getColumn(3).setPreferredWidth(200);
-        
+
         scrollPane.setViewportView(table);
 
         // Boutons d'action CRUD
@@ -124,6 +127,8 @@ public class FrmListeTypeAcces extends JFrame {
         btnAjouter.setBackground(accentColor);
         btnAjouter.setBorderPainted(false);
         btnAjouter.setFocusPainted(false);
+        btnAjouter.setOpaque(true);
+        btnAjouter.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnAjouter.setBounds(20, 440, 150, 40);
         btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnAjouter);
@@ -134,6 +139,8 @@ public class FrmListeTypeAcces extends JFrame {
         btnModifier.setBackground(primaryColor);
         btnModifier.setBorderPainted(false);
         btnModifier.setFocusPainted(false);
+        btnModifier.setOpaque(true);
+        btnModifier.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnModifier.setBounds(185, 440, 130, 40);
         btnModifier.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnModifier);
@@ -144,6 +151,8 @@ public class FrmListeTypeAcces extends JFrame {
         btnDesactiver.setBackground(deleteColor);
         btnDesactiver.setBorderPainted(false);
         btnDesactiver.setFocusPainted(false);
+        btnDesactiver.setOpaque(true);
+        btnDesactiver.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnDesactiver.setBounds(330, 440, 190, 40);
         btnDesactiver.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnDesactiver);
@@ -191,8 +200,8 @@ public class FrmListeTypeAcces extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow < 0) {
-                    JOptionPane.showMessageDialog(FrmListeTypeAcces.this, 
-                        "Veuillez sélectionner un type d'accès dans le tableau.", 
+                    JOptionPane.showMessageDialog(FrmListeTypeAcces.this,
+                        "Veuillez sélectionner un type d'accès dans le tableau.",
                         "Sélection requise", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -208,28 +217,28 @@ public class FrmListeTypeAcces extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow < 0) {
-                    JOptionPane.showMessageDialog(FrmListeTypeAcces.this, 
-                        "Veuillez sélectionner un type d'accès dans le tableau.", 
+                    JOptionPane.showMessageDialog(FrmListeTypeAcces.this,
+                        "Veuillez sélectionner un type d'accès dans le tableau.",
                         "Sélection requise", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 TypeAcces selection = listeActuelle.get(selectedRow);
-                
-                int confirm = JOptionPane.showConfirmDialog(FrmListeTypeAcces.this, 
+
+                int confirm = JOptionPane.showConfirmDialog(FrmListeTypeAcces.this,
                     "Êtes-vous sûr de vouloir désactiver le type d'accès '" + selection.getLibelle() + "' ?\n" +
-                    "(Cette suppression est logique, aucune donnée physique ne sera supprimée)", 
+                    "(Cette suppression est logique, aucune donnée physique ne sera supprimée)",
                     "Confirmation de désactivation", JOptionPane.YES_NO_OPTION);
-                
+
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
                         typeAccesService.desactiver(selection.getIdTypeAcces());
-                        JOptionPane.showMessageDialog(FrmListeTypeAcces.this, 
-                            "Le type d'accès a été désactivé avec succès.", 
+                        JOptionPane.showMessageDialog(FrmListeTypeAcces.this,
+                            "Le type d'accès a été désactivé avec succès.",
                             "Désactivation réussie", JOptionPane.INFORMATION_MESSAGE);
                         chargerDonnees();
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(FrmListeTypeAcces.this, 
-                            "Erreur de désactivation : " + ex.getMessage(), 
+                        JOptionPane.showMessageDialog(FrmListeTypeAcces.this,
+                            "Erreur de désactivation : " + ex.getMessage(),
                             "Opération interdite", JOptionPane.ERROR_MESSAGE);
                     }
                 }

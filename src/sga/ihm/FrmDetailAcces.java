@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 import sga.metier.Acces;
 
 public class FrmDetailAcces extends JDialog {
@@ -15,7 +16,7 @@ public class FrmDetailAcces extends JDialog {
 
     public FrmDetailAcces(JFrame parent, Acces acces) {
         super(parent, true); // Modal
-        
+
         setTitle("SGA - Fiche Point d'Accès");
         setBounds(100, 100, 500, 480);
         setLocationRelativeTo(parent);
@@ -71,7 +72,7 @@ public class FrmDetailAcces extends JDialog {
         txtDesc.setEditable(false);
         txtDesc.setBackground(new Color(235, 238, 242));
         txtDesc.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        
+
         JScrollPane scrollPane = new JScrollPane(txtDesc);
         scrollPane.setBounds(20, 245, 440, 70);
         contentPanel.add(scrollPane);
@@ -91,6 +92,8 @@ public class FrmDetailAcces extends JDialog {
         btnFermer.setBackground(primaryColor);
         btnFermer.setBorderPainted(false);
         btnFermer.setFocusPainted(false);
+        btnFermer.setOpaque(true);
+        btnFermer.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnFermer.setBounds(20, 400, 440, 35);
         btnFermer.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPanel.add(btnFermer);

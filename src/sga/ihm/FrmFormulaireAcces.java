@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 import sga.dao.ILieuDAO;
 import sga.dao.LieuDAOImpl;
 import sga.metier.Acces;
@@ -134,6 +135,8 @@ public class FrmFormulaireAcces extends JDialog {
         btnEnregistrer.setBackground(accentColor);
         btnEnregistrer.setBorderPainted(false);
         btnEnregistrer.setFocusPainted(false);
+        btnEnregistrer.setOpaque(true);
+        btnEnregistrer.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnEnregistrer.setBounds(20, 375, 130, 35);
         btnEnregistrer.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPanel.add(btnEnregistrer);
@@ -155,7 +158,7 @@ public class FrmFormulaireAcces extends JDialog {
         if (edition && acces != null) {
             txtLibelle.setText(acces.getLibelle());
             txtDescription.setText(acces.getDescription() != null ? acces.getDescription() : "");
-            
+
             // Sélectionner le type
             for (int i = 0; i < cbTypes.getItemCount(); i++) {
                 if (cbTypes.getItemAt(i).getIdTypeAcces() == acces.getIdTypeAcces()) {
@@ -163,7 +166,7 @@ public class FrmFormulaireAcces extends JDialog {
                     break;
                 }
             }
-            
+
             // Sélectionner le lieu
             for (int i = 0; i < cbLieux.getItemCount(); i++) {
                 if (cbLieux.getItemAt(i).getIdLieu() == acces.getIdLieu()) {
@@ -208,7 +211,7 @@ public class FrmFormulaireAcces extends JDialog {
     private void enregistrer() {
         String libelle = txtLibelle.getText().trim();
         String description = txtDescription.getText().trim();
-        
+
         TypeAcces selectedType = (TypeAcces) cbTypes.getSelectedItem();
         int idType = (selectedType != null) ? selectedType.getIdTypeAcces() : 0;
 
@@ -244,8 +247,8 @@ public class FrmFormulaireAcces extends JDialog {
         }
 
         if (!valid) {
-            JOptionPane.showMessageDialog(this, 
-                "Veuillez renseigner tous les champs obligatoires (indiqués par une bordure rouge).", 
+            JOptionPane.showMessageDialog(this,
+                "Veuillez renseigner tous les champs obligatoires (indiqués par une bordure rouge).",
                 "Champs manquants", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -257,8 +260,8 @@ public class FrmFormulaireAcces extends JDialog {
                 accesModif.setIdTypeAcces(idType);
                 accesModif.setIdLieu(idLieu);
                 accesService.modifier(accesModif);
-                JOptionPane.showMessageDialog(this, 
-                    "Le point d'accès a été modifié avec succès.", 
+                JOptionPane.showMessageDialog(this,
+                    "Le point d'accès a été modifié avec succès.",
                     "Modification réussie", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 Acces nouveau = new Acces();
@@ -267,8 +270,8 @@ public class FrmFormulaireAcces extends JDialog {
                 nouveau.setIdTypeAcces(idType);
                 nouveau.setIdLieu(idLieu);
                 accesService.creer(nouveau);
-                JOptionPane.showMessageDialog(this, 
-                    "Le point d'accès a été créé avec succès.", 
+                JOptionPane.showMessageDialog(this,
+                    "Le point d'accès a été créé avec succès.",
                     "Création réussie", JOptionPane.INFORMATION_MESSAGE);
             }
 
@@ -276,8 +279,8 @@ public class FrmFormulaireAcces extends JDialog {
             this.dispose();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, 
-                "Erreur lors de l'enregistrement : " + ex.getMessage(), 
+            JOptionPane.showMessageDialog(this,
+                "Erreur lors de l'enregistrement : " + ex.getMessage(),
                 "Erreur métier", JOptionPane.ERROR_MESSAGE);
         }
     }

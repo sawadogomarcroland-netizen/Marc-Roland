@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 import sga.metier.TypeAcces;
 import sga.service.TypeAccesService;
 
@@ -95,6 +96,8 @@ public class FrmFormulaireTypeAcces extends JDialog {
         btnEnregistrer.setBackground(accentColor);
         btnEnregistrer.setBorderPainted(false);
         btnEnregistrer.setFocusPainted(false);
+        btnEnregistrer.setOpaque(true);
+        btnEnregistrer.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnEnregistrer.setBounds(20, 260, 130, 35);
         btnEnregistrer.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPanel.add(btnEnregistrer);
@@ -141,8 +144,8 @@ public class FrmFormulaireTypeAcces extends JDialog {
                 BorderFactory.createLineBorder(Color.RED, 1),
                 BorderFactory.createEmptyBorder(2, 5, 2, 5)
             ));
-            JOptionPane.showMessageDialog(this, 
-                "Le champ Libellé est obligatoire.", 
+            JOptionPane.showMessageDialog(this,
+                "Le champ Libellé est obligatoire.",
                 "Champ manquant", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -159,8 +162,8 @@ public class FrmFormulaireTypeAcces extends JDialog {
                 typeAccesModif.setLibelle(libelle);
                 typeAccesModif.setDescription(description);
                 typeAccesService.modifier(typeAccesModif);
-                JOptionPane.showMessageDialog(this, 
-                    "Le type d'accès a été modifié avec succès.", 
+                JOptionPane.showMessageDialog(this,
+                    "Le type d'accès a été modifié avec succès.",
                     "Modification réussie", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 // Création
@@ -168,18 +171,18 @@ public class FrmFormulaireTypeAcces extends JDialog {
                 nouveau.setLibelle(libelle);
                 nouveau.setDescription(description.isEmpty() ? null : description);
                 typeAccesService.creer(nouveau);
-                JOptionPane.showMessageDialog(this, 
-                    "Le type d'accès a été créé avec succès.", 
+                JOptionPane.showMessageDialog(this,
+                    "Le type d'accès a été créé avec succès.",
                     "Création réussie", JOptionPane.INFORMATION_MESSAGE);
             }
-            
+
             // Rafraîchir la liste parente
             parentFrame.chargerDonnees();
             this.dispose();
-            
+
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, 
-                "Erreur de validation : " + ex.getMessage(), 
+            JOptionPane.showMessageDialog(this,
+                "Erreur de validation : " + ex.getMessage(),
                 "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalButtonUI;
 import javax.swing.table.DefaultTableModel;
 import sga.dao.ILieuDAO;
 import sga.dao.LieuDAOImpl;
@@ -76,10 +77,10 @@ public class FrmListeAcces extends JFrame {
         panelFiltres.setBackground(Color.WHITE);
         panelFiltres.setBounds(20, 60, 890, 80);
         panelFiltres.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(220, 225, 230)), 
-            "Filtres et Recherche multicritères", 
-            0, 0, 
-            new Font("Segoe UI", Font.BOLD, 11), 
+            BorderFactory.createLineBorder(new Color(220, 225, 230)),
+            "Filtres et Recherche multicritères",
+            0, 0,
+            new Font("Segoe UI", Font.BOLD, 11),
             primaryColor
         ));
         panelFiltres.setLayout(null);
@@ -122,6 +123,8 @@ public class FrmListeAcces extends JFrame {
         btnRechercher.setBackground(primaryColor);
         btnRechercher.setBorderPainted(false);
         btnRechercher.setFocusPainted(false);
+        btnRechercher.setOpaque(true);
+        btnRechercher.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnRechercher.setBounds(760, 30, 110, 30);
         btnRechercher.setCursor(new Cursor(Cursor.HAND_CURSOR));
         panelFiltres.add(btnRechercher);
@@ -147,7 +150,7 @@ public class FrmListeAcces extends JFrame {
             }
         };
         table.setModel(tableModel);
-        
+
         table.getColumnModel().getColumn(0).setPreferredWidth(50);
         table.getColumnModel().getColumn(1).setPreferredWidth(230);
         table.getColumnModel().getColumn(2).setPreferredWidth(130);
@@ -164,6 +167,8 @@ public class FrmListeAcces extends JFrame {
         btnAjouter.setBackground(accentColor);
         btnAjouter.setBorderPainted(false);
         btnAjouter.setFocusPainted(false);
+        btnAjouter.setOpaque(true);
+        btnAjouter.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnAjouter.setBounds(20, 445, 150, 40);
         btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnAjouter);
@@ -174,6 +179,8 @@ public class FrmListeAcces extends JFrame {
         btnModifier.setBackground(primaryColor);
         btnModifier.setBorderPainted(false);
         btnModifier.setFocusPainted(false);
+        btnModifier.setOpaque(true);
+        btnModifier.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnModifier.setBounds(185, 445, 120, 40);
         btnModifier.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnModifier);
@@ -184,6 +191,8 @@ public class FrmListeAcces extends JFrame {
         btnDesactiver.setBackground(deleteColor);
         btnDesactiver.setBorderPainted(false);
         btnDesactiver.setFocusPainted(false);
+        btnDesactiver.setOpaque(true);
+        btnDesactiver.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnDesactiver.setBounds(320, 445, 130, 40);
         btnDesactiver.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnDesactiver);
@@ -194,6 +203,8 @@ public class FrmListeAcces extends JFrame {
         btnDetail.setBackground(accentOrange);
         btnDetail.setBorderPainted(false);
         btnDetail.setFocusPainted(false);
+        btnDetail.setOpaque(true);
+        btnDetail.setUI(new MetalButtonUI()); // CORRIGE : force le rendu pour respecter les couleurs
         btnDetail.setBounds(465, 445, 130, 40);
         btnDetail.setCursor(new Cursor(Cursor.HAND_CURSOR));
         contentPane.add(btnDetail);
@@ -232,8 +243,8 @@ public class FrmListeAcces extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow < 0) {
-                    JOptionPane.showMessageDialog(FrmListeAcces.this, 
-                        "Veuillez sélectionner un point d'accès dans le tableau.", 
+                    JOptionPane.showMessageDialog(FrmListeAcces.this,
+                        "Veuillez sélectionner un point d'accès dans le tableau.",
                         "Sélection requise", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -248,28 +259,28 @@ public class FrmListeAcces extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow < 0) {
-                    JOptionPane.showMessageDialog(FrmListeAcces.this, 
-                        "Veuillez sélectionner un point d'accès dans le tableau.", 
+                    JOptionPane.showMessageDialog(FrmListeAcces.this,
+                        "Veuillez sélectionner un point d'accès dans le tableau.",
                         "Sélection requise", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 Acces selection = listeActuelle.get(selectedRow);
-                
-                int confirm = JOptionPane.showConfirmDialog(FrmListeAcces.this, 
+
+                int confirm = JOptionPane.showConfirmDialog(FrmListeAcces.this,
                     "Êtes-vous sûr de vouloir désactiver le point d'accès '" + selection.getLibelle() + "' ?\n" +
-                    "(Cette suppression est logique, le statut passera à Inactif)", 
+                    "(Cette suppression est logique, le statut passera à Inactif)",
                     "Confirmation de désactivation", JOptionPane.YES_NO_OPTION);
-                
+
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
                         accesService.desactiver(selection.getIdAcces());
-                        JOptionPane.showMessageDialog(FrmListeAcces.this, 
-                            "Le point d'accès a été désactivé avec succès.", 
+                        JOptionPane.showMessageDialog(FrmListeAcces.this,
+                            "Le point d'accès a été désactivé avec succès.",
                             "Opération réussie", JOptionPane.INFORMATION_MESSAGE);
                         chargerDonnees();
                     } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(FrmListeAcces.this, 
-                            "Erreur de désactivation : " + ex.getMessage(), 
+                        JOptionPane.showMessageDialog(FrmListeAcces.this,
+                            "Erreur de désactivation : " + ex.getMessage(),
                             "Erreur", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -281,8 +292,8 @@ public class FrmListeAcces extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow < 0) {
-                    JOptionPane.showMessageDialog(FrmListeAcces.this, 
-                        "Veuillez sélectionner un point d'accès dans le tableau.", 
+                    JOptionPane.showMessageDialog(FrmListeAcces.this,
+                        "Veuillez sélectionner un point d'accès dans le tableau.",
                         "Sélection requise", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
@@ -313,7 +324,7 @@ public class FrmListeAcces extends JFrame {
         tableModel.setRowCount(0);
 
         String libelle = txtRecherche.getText().trim();
-        
+
         Lieu selectedLieu = (Lieu) cbLieux.getSelectedItem();
         int idLieu = (selectedLieu != null) ? selectedLieu.getIdLieu() : 0;
 
