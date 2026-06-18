@@ -15,7 +15,6 @@ import sga.util.ConnexionBD;
 public class AccesDAOImpl implements IAccesDAO {
 
     @Override
-  
     public List<Acces> listerActifs() {
         if (ConnexionBD.isSimulationMode()) {
             List<Acces> result = new ArrayList<>();
@@ -33,8 +32,9 @@ public class AccesDAOImpl implements IAccesDAO {
         if (conn == null) {
             return liste;
         }
+        // CORRIGE : l.libelle_lieu -> l.libelle (nom de colonne conforme au script officiel)
         String sql = "SELECT a.id_acces, a.libelle, a.description, a.id_type_acces, ta.libelle AS type_acces, " +
-                     "a.id_lieu, l.libelle_lieu AS lieu, a.statut, a.date_creation, a.date_modification " +
+                     "a.id_lieu, l.libelle AS lieu, a.statut, a.date_creation, a.date_modification " +
                      "FROM ACCES a " +
                      "JOIN TYPE_ACCES ta ON ta.id_type_acces = a.id_type_acces " +
                      "JOIN LIEU l ON l.id_lieu = a.id_lieu " +
@@ -74,10 +74,10 @@ public class AccesDAOImpl implements IAccesDAO {
             acces.setIdAcces(newId);
             acces.setStatut("A");
             acces.setDateCreation(new Date());
-            
+
             // Résoudre les libellés de jointure pour la simulation
             resolveJoinLabels(acces);
-            
+
             SimulationData.accesList.add(acces);
             return true;
         }
@@ -86,8 +86,10 @@ public class AccesDAOImpl implements IAccesDAO {
         if (conn == null) {
             return false;
         }
-        String sql = "INSERT INTO ACCES (libelle, description, id_type_acces, id_lieu, statut, date_creation) " +
-                     "VALUES (?, ?, ?, ?, 'A', SYSDATE)";
+        // CORRIGE : id_acces n'est PAS auto-genere (pas d'IDENTITY dans le script officiel).
+        // Il faut fournir explicitement SEQ_ACCES.NEXTVAL, sinon ORA-01400 (NULL interdit).
+        String sql = "INSERT INTO ACCES (id_acces, libelle, description, id_type_acces, id_lieu, statut, date_creation) " +
+                     "VALUES (SEQ_ACCES.NEXTVAL, ?, ?, ?, ?, 'A', SYSDATE)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, acces.getLibelle());
             ps.setString(2, acces.getDescription());
@@ -182,8 +184,9 @@ public class AccesDAOImpl implements IAccesDAO {
         if (conn == null) {
             return null;
         }
+        // CORRIGE : l.libelle_lieu -> l.libelle
         String sql = "SELECT a.id_acces, a.libelle, a.description, a.id_type_acces, ta.libelle AS type_acces, " +
-                     "a.id_lieu, l.libelle_lieu AS lieu, a.statut, a.date_creation, a.date_modification " +
+                     "a.id_lieu, l.libelle AS lieu, a.statut, a.date_creation, a.date_modification " +
                      "FROM ACCES a " +
                      "JOIN TYPE_ACCES ta ON ta.id_type_acces = a.id_type_acces " +
                      "JOIN LIEU l ON l.id_lieu = a.id_lieu " +
@@ -220,7 +223,7 @@ public class AccesDAOImpl implements IAccesDAO {
                 if (!"A".equals(a.getStatut())) {
                     continue;
                 }
-                
+
                 // Critère libellé
                 if (libelle != null && !libelle.trim().isEmpty()) {
                     if (!a.getLibelle().toUpperCase().contains(libelle.trim().toUpperCase())) {
@@ -239,7 +242,7 @@ public class AccesDAOImpl implements IAccesDAO {
                         continue;
                     }
                 }
-                
+
                 result.add(a);
             }
             result.sort((a1, a2) -> a1.getLibelle().compareToIgnoreCase(a2.getLibelle()));
@@ -253,9 +256,10 @@ public class AccesDAOImpl implements IAccesDAO {
         }
 
         // Construction dynamique de la requête SQL
+        // CORRIGE : l.libelle_lieu -> l.libelle
         StringBuilder sql = new StringBuilder(
             "SELECT a.id_acces, a.libelle, a.description, a.id_type_acces, ta.libelle AS type_acces, " +
-            "a.id_lieu, l.libelle_lieu AS lieu, a.statut, a.date_creation, a.date_modification " +
+            "a.id_lieu, l.libelle AS lieu, a.statut, a.date_creation, a.date_modification " +
             "FROM ACCES a " +
             "JOIN TYPE_ACCES ta ON ta.id_type_acces = a.id_type_acces " +
             "JOIN LIEU l ON l.id_lieu = a.id_lieu " +

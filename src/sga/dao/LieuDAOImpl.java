@@ -10,11 +10,15 @@ import sga.metier.Lieu;
 import sga.util.ConnexionBD;
 
 public class LieuDAOImpl implements ILieuDAO {
+
     @Override
     public List<Lieu> listerLieuxActifs() {
         if (ConnexionBD.isSimulationMode()) {
             List<Lieu> result = new ArrayList<>();
             for (Lieu l : SimulationData.lieux) {
+                // ATTENTION : a verifier avec le contenu reel de SimulationData.lieux.
+                // Si les donnees de simulation stockent deja 'O' (comme en base reelle),
+                // remplacer "OUVERT" par "O" ci-dessous pour rester coherent.
                 if ("OUVERT".equalsIgnoreCase(l.getStatut())) {
                     result.add(l);
                 }
@@ -27,15 +31,18 @@ public class LieuDAOImpl implements ILieuDAO {
         if (conn == null) {
             return liste;
         }
-        String sql = "SELECT id_lieu, libelle_lieu, emplacement, capacite_max, statut FROM LIEU WHERE statut = 'OUVERT' ORDER BY libelle_lieu ASC";
-        
+        // CORRIGE : libelle_lieu -> libelle, et statut 'OUVERT' -> 'O'
+        // (conforme au script officiel : LIEU.statut est CHAR(1) IN ('O','F'))
+        String sql = "SELECT id_lieu, libelle, emplacement, capacite_max, statut " +
+                     "FROM LIEU WHERE statut = 'O' ORDER BY libelle ASC";
+
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
+
             while (rs.next()) {
                 liste.add(new Lieu(
                     rs.getInt("id_lieu"),
-                    rs.getString("libelle_lieu"),
+                    rs.getString("libelle"),
                     rs.getString("emplacement"),
                     rs.getInt("capacite_max"),
                     rs.getString("statut")

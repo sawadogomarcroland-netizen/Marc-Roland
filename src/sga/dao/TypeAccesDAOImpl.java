@@ -71,7 +71,11 @@ public class TypeAccesDAOImpl implements ITypeAccesDAO {
         if (conn == null) {
             return false;
         }
-        String sql = "INSERT INTO TYPE_ACCES (libelle, description, date_creation) VALUES (?, ?, SYSDATE)";
+        // CORRIGE : id_type_acces n'est PAS auto-genere (pas d'IDENTITY dans le script
+        // officiel). Il faut fournir explicitement SEQ_TYPE_ACCES.NEXTVAL, sinon
+        // ORA-01400 (cannot insert NULL into "TYPE_ACCES"."ID_TYPE_ACCES").
+        String sql = "INSERT INTO TYPE_ACCES (id_type_acces, libelle, description, date_creation) " +
+                     "VALUES (SEQ_TYPE_ACCES.NEXTVAL, ?, ?, SYSDATE)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             // Le trigger TRG_TYPE_ACCES_UPPER passera le libellé en majuscule automatiquement
             ps.setString(1, type.getLibelle());
@@ -204,7 +208,7 @@ public class TypeAccesDAOImpl implements ITypeAccesDAO {
         if (ConnexionBD.isSimulationMode()) {
             List<TypeAcces> result = new ArrayList<>();
             for (TypeAcces t : SimulationData.types) {
-                if ("A".equals(t.getStatut()) && 
+                if ("A".equals(t.getStatut()) &&
                     (libelle == null || t.getLibelle().toUpperCase().contains(libelle.toUpperCase()))) {
                     result.add(t);
                 }
